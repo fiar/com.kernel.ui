@@ -1,0 +1,12 @@
+{
+    "name": "KernelEditor.UI",
+    "references": [
+        "Kernel.Core",
+        "Kernel.UI"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

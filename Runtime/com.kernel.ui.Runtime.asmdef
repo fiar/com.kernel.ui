@@ -1,0 +1,8 @@
+{
+    "name": "Kernel.UI",
+    "references": [
+        "Kernel.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
