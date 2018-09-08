@@ -32,6 +32,12 @@ namespace Kernel.UI
 		private bool _needCloseFader;
 
 
+		public bool ShowFader
+		{
+			get { return _showFader; }
+			set { _showFader = value; }
+		}
+
 		protected virtual void Awake()
 		{
 			_canvasGroup = GetComponent<CanvasGroup>();
