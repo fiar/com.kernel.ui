@@ -28,13 +28,27 @@ namespace Kernel.UI
 		public bool WasEnabled { get { return _form.WasEnabled; } }
 		public bool IsTweening { get { return _state == UITweenState.Opening || _state == UITweenState.Closing; } }
 
+		protected object _tweenTarget = new object();
+
 
 		protected void Awake()
 		{
-			if (_autoRegister && _form != null)
+			if (_autoRegister)
 			{
-				_form.RegisterTween(this);
+				if (_form == null)
+				{
+					Debug.LogWarning("Form is not set. Tween: " + this, this);
+					_form = GetComponentInParent<Form>();
+				}
+
+				Debug.Assert(_form != null, "Form not found. Tween: " + this, this);
+				if (_form != null)
+				{
+					_form.RegisterTween(this);
+				}
 			}
+
+			OnAwake();
 		}
 
 		public void Open()
@@ -50,6 +64,10 @@ namespace Kernel.UI
 		}
 
 		public virtual void ResetTween()
+		{
+		}
+
+		protected virtual void OnAwake()
 		{
 		}
 

@@ -16,6 +16,9 @@ namespace Kernel.UI
 		public event Action ClosedEvent;
 		#endregion
 
+		[SerializeField]
+		private bool _showFader;
+
 		private FormState _state = FormState.Closed;
 		private IEnumerator _processRoutine;
 		protected CanvasGroup _canvasGroup;
@@ -25,6 +28,8 @@ namespace Kernel.UI
 		public bool WasEnabled { get; private set; }
 
 		private List<UITween> _tweens = new List<UITween>();
+
+		private bool _needCloseFader;
 
 
 		protected virtual void Awake()
@@ -88,6 +93,13 @@ namespace Kernel.UI
 			if (setAsLastSibling)
 				transform.SetAsLastSibling();
 
+
+			if (_showFader)
+			{
+				_needCloseFader = true;
+				DialogFader.FadeIn(this);
+			}
+
 			_state = FormState.Opening;
 			OnOpen(args);
 			if (OpenEvent != null) OpenEvent.Invoke();
@@ -104,6 +116,11 @@ namespace Kernel.UI
 
 		public virtual void Close(bool force)
 		{
+			if (_needCloseFader)
+			{
+				DialogFader.FadeOut(this);
+			}
+
 			_canvasGroup.blocksRaycasts = false;
 
 			if (force)

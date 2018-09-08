@@ -38,8 +38,6 @@ namespace Kernel.UI
 		private Dictionary<string, UIBehaviour> _behaviours;
 		private UIBehaviour _defaultBehaviour;
 
-		//public UIBehaviour Behaviour { get; private set; }
-
 		private List<Form> _forms;
 
 
@@ -59,7 +57,6 @@ namespace Kernel.UI
 			if (!IsInstantiated) return null;
 			return Instance.CreateForm_Internal(formName, Instance._defaultBehaviour, parent);
 		}
-
 
 		public static Form CreateForm(string formName, string behaviourName, Transform parent = null)
 		{
