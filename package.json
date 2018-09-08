@@ -2,7 +2,7 @@
     "name": "com.kernel.ui",
     "displayName": "Kernel UI",
 	"author": "fiar",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "unity": "2018.1",
     "description": "Kernel UI package",
     "keywords": [
