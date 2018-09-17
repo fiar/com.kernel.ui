@@ -59,6 +59,11 @@ namespace Kernel.UI
 
 		public virtual void Destroy()
 		{
+			if (_needCloseFader)
+			{
+				_needCloseFader = false;
+				DialogFader.FadeOut(this, true);
+			}
 			if (gameObject != null) Destroy(gameObject);
 		}
 
@@ -124,7 +129,8 @@ namespace Kernel.UI
 		{
 			if (_needCloseFader)
 			{
-				DialogFader.FadeOut(this);
+				_needCloseFader = false;
+				DialogFader.FadeOut(this, force);
 			}
 
 			_canvasGroup.blocksRaycasts = false;

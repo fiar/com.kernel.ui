@@ -55,19 +55,19 @@ namespace Kernel.UI
 			Instance.FadeIn_Internal(form, duration, completeCallback);
 		}
 
-		public static void FadeOut(Form form, Action completeCallback = null)
+		public static void FadeOut(Form form, bool force = false, Action completeCallback = null)
 		{
 			if (IsInstantiated)
 			{
-				Instance.FadeOut_Internal(form, completeCallback);
+				Instance.FadeOut_Internal(form, force, completeCallback);
 			}
 		}
 
-		public static void FadeOut(Form form, float duration, Action completeCallback = null)
+		public static void FadeOut(Form form, float duration, bool force = false, Action completeCallback = null)
 		{
 			if (IsInstantiated)
 			{
-				Instance.FadeOut_Internal(form, duration, completeCallback);
+				Instance.FadeOut_Internal(form, duration, force, completeCallback);
 			}
 		}
 
@@ -75,8 +75,8 @@ namespace Kernel.UI
 		#region Internal
 		protected abstract void FadeIn_Internal(Form form, Action completeCallback = null);
 		protected abstract void FadeIn_Internal(Form form, float duration, Action completeCallback = null);
-		protected abstract void FadeOut_Internal(Form form, Action completeCallback = null);
-		protected abstract void FadeOut_Internal(Form form, float duration, Action completeCallback = null);
+		protected abstract void FadeOut_Internal(Form form, bool force = false, Action completeCallback = null);
+		protected abstract void FadeOut_Internal(Form form, float duration, bool force = false, Action completeCallback = null);
 		#endregion
 	}
 }
