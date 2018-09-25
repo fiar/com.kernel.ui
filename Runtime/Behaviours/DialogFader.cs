@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-using DG.Tweening;
 using System.Collections.Generic;
 
 namespace Kernel.UI
