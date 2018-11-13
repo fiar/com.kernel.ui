@@ -58,7 +58,7 @@ namespace Kernel.UI
 			return Instance.CreateForm_Internal(formName, Instance._defaultBehaviour, containerName);
 		}
 
-		public static Form CreateForm(string formName, string behaviourName, string containerName = "")
+		public static Form CreateForm(string formName, string behaviourName, string containerName)
 		{
 			if (!IsInstantiated) return null;
 			if (!_instance._behaviours.ContainsKey(behaviourName))
@@ -74,6 +74,22 @@ namespace Kernel.UI
 			if (!IsInstantiated) return null;
 			return Instance.CreateForm_Internal(formName, parent);
 		}
+
+		public static T CreateForm<T>(string formName, string containerName = "") where T : Form
+		{
+			return CreateForm(formName, containerName) as T;
+		}
+
+		public static T CreateForm<T>(string formName, string behaviourName, string containerName) where T : Form
+		{
+			return CreateForm(formName, behaviourName, containerName) as T;
+		}
+
+		public static T CreateForm<T>(string formName, Transform parent) where T : Form
+		{
+			return CreateForm(formName, parent) as T;
+		}
+
 
 		#region Internal
 		private void Initialize_Internal()
