@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Kernel.UI
@@ -10,14 +11,17 @@ namespace Kernel.UI
 		private bool _disableChildsOnStart;
 		[Space]
 		[SerializeField]
-		private RectTransform _container;
+		private string _defaultContainer = "Default";
 
 		private Canvas _canvas;
+		private Dictionary<string, RectTransform> _containers;
 
 
 		protected void Awake()
 		{
 			_canvas = GetComponent<Canvas>();
+
+			UpdateContainers();
 
 #if UNITY_EDITOR
 			if (_disableChildsOnStart)
@@ -35,17 +39,31 @@ namespace Kernel.UI
 			get { return _canvas; }
 		}
 
-		public RectTransform Container
+		public RectTransform GetContainer(string containerName)
 		{
-			get { return _container; }
+			if (string.IsNullOrEmpty(containerName))
+			{
+				containerName = _defaultContainer;
+			}
+
+			Debug.Assert(_containers.ContainsKey(containerName), "Container not exists: " + containerName);
+
+			return _containers.ContainsKey(containerName) ? _containers[containerName] : null;
 		}
 
-#if UNITY_EDITOR
-		protected void Reset()
+		protected void UpdateContainers()
 		{
-			if (_container == null)
-				_container = transform as RectTransform;
+			_containers = new Dictionary<string, RectTransform>();
+			foreach (var child in transform)
+			{
+				var container = child as RectTransform;
+				Debug.Assert(!_containers.ContainsKey(container.name), "Container already exists: " + container.name);
+
+				if (!_containers.ContainsKey(container.name))
+				{
+					_containers.Add(container.name, container);
+				}
+			}
 		}
-#endif
 	}
 }

@@ -52,13 +52,13 @@ namespace Kernel.UI
 			Instance.Destroy_Internal();
 		}
 
-		public static Form CreateForm(string formName, Transform parent = null)
+		public static Form CreateForm(string formName, string containerName = "")
 		{
 			if (!IsInstantiated) return null;
-			return Instance.CreateForm_Internal(formName, Instance._defaultBehaviour, parent);
+			return Instance.CreateForm_Internal(formName, Instance._defaultBehaviour, containerName);
 		}
 
-		public static Form CreateForm(string formName, string behaviourName, Transform parent = null)
+		public static Form CreateForm(string formName, string behaviourName, string containerName = "")
 		{
 			if (!IsInstantiated) return null;
 			if (!_instance._behaviours.ContainsKey(behaviourName))
@@ -66,9 +66,14 @@ namespace Kernel.UI
 				Debug.LogWarningFormat("UIBehaviour with name \"{0}\" not exists", behaviourName);
 				behaviourName = Instance._defaultBehaviour.name;
 			}
-			return Instance.CreateForm_Internal(formName, _instance._behaviours[behaviourName], parent);
+			return Instance.CreateForm_Internal(formName, _instance._behaviours[behaviourName], containerName);
 		}
 
+		public static Form CreateForm(string formName, Transform parent)
+		{
+			if (!IsInstantiated) return null;
+			return Instance.CreateForm_Internal(formName, parent);
+		}
 
 		#region Internal
 		private void Initialize_Internal()
@@ -109,14 +114,35 @@ namespace Kernel.UI
 			}
 		}
 
-		private Form CreateForm_Internal(string name, UIBehaviour behaviour, Transform parent)
+		private Form CreateForm_Internal(string name, UIBehaviour behaviour, string containerName)
+		{
+			var resource = Resources.Load<Form>(Path + "/" + name);
+			Debug.Assert(resource != null, "Form (" + name + ") not found");
+
+			var container = behaviour.GetContainer(containerName);
+			Debug.Assert(container != null, "Container not exists: " + containerName);
+
+			if (container != null)
+			{
+				var form = GameObject.Instantiate<Form>(resource);
+				form.name = name;
+				form.transform.SetParent(container, false);
+				form.gameObject.SetActive(false);
+				_forms.Add(form);
+				return form;
+			}
+
+			return null;
+		}
+
+		private Form CreateForm_Internal(string name, Transform parent)
 		{
 			var resource = Resources.Load<Form>(Path + "/" + name);
 			Debug.Assert(resource != null, "Form (" + name + ") not found");
 
 			var form = GameObject.Instantiate<Form>(resource);
 			form.name = name;
-			form.transform.SetParent((parent == null) ? behaviour.Container : parent, false);
+			form.transform.SetParent(parent, false);
 			form.gameObject.SetActive(false);
 			_forms.Add(form);
 
