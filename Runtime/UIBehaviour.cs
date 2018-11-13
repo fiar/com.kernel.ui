@@ -17,7 +17,7 @@ namespace Kernel.UI
 		private Dictionary<string, RectTransform> _containers;
 
 
-		protected void Awake()
+		protected virtual void Awake()
 		{
 			_canvas = GetComponent<Canvas>();
 
