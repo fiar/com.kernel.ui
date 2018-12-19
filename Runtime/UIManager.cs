@@ -35,8 +35,7 @@ namespace Kernel.UI
 			set { _path = value; }
 		}
 
-		private Dictionary<string, UIBehaviour> _behaviours;
-		private UIBehaviour _defaultBehaviour;
+		private UIBehaviour _behaviour;
 
 		private List<Form> _forms;
 
@@ -55,34 +54,19 @@ namespace Kernel.UI
 		public static Form CreateForm(string formName, string containerName = "")
 		{
 			if (!IsInstantiated) return null;
-			return Instance.CreateForm_Internal(formName, Instance._defaultBehaviour, containerName);
-		}
-
-		public static Form CreateForm(string formName, string behaviourName, string containerName)
-		{
-			if (!IsInstantiated) return null;
-			if (!_instance._behaviours.ContainsKey(behaviourName))
-			{
-				Debug.LogWarningFormat("UIBehaviour with name \"{0}\" not exists", behaviourName);
-				behaviourName = Instance._defaultBehaviour.name;
-			}
-			return Instance.CreateForm_Internal(formName, _instance._behaviours[behaviourName], containerName);
+			return Instance.CreateForm_Internal(formName, Instance._behaviour, containerName);
 		}
 
 		public static Form CreateForm(string formName, Transform parent)
 		{
 			if (!IsInstantiated) return null;
+			if (parent == null) return CreateForm(formName);
 			return Instance.CreateForm_Internal(formName, parent);
 		}
 
 		public static T CreateForm<T>(string formName, string containerName = "") where T : Form
 		{
 			return CreateForm(formName, containerName) as T;
-		}
-
-		public static T CreateForm<T>(string formName, string behaviourName, string containerName) where T : Form
-		{
-			return CreateForm(formName, behaviourName, containerName) as T;
 		}
 
 		public static T CreateForm<T>(string formName, Transform parent) where T : Form
@@ -95,20 +79,10 @@ namespace Kernel.UI
 		private void Initialize_Internal()
 		{
 			var behaviours = GameObject.FindObjectsOfType<UIBehaviour>();
-			Debug.Assert(behaviours.Length > 0, "UIBehaviours not found");
+			Debug.Assert(behaviours.Length == 1, "UIBehaviour must be in single instance! Found: " + behaviours.Length);
+			if (behaviours.Length == 0) return;
 
-			_behaviours = new Dictionary<string, UIBehaviour>();
-			foreach (var behaviour in behaviours)
-			{
-				if (_behaviours.ContainsKey(behaviour.name))
-				{
-					Debug.LogErrorFormat("UIBehaviour with name \"{0}\" already exists", behaviour.name);
-					continue;
-				}
-				_behaviours.Add(behaviour.name, behaviour);
-			}
-
-			_defaultBehaviour = behaviours[0];
+			_behaviour = behaviours[0];
 
 			_forms = new List<Form>();
 

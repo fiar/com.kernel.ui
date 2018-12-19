@@ -7,8 +7,8 @@ namespace Kernel.UI
 	[RequireComponent(typeof(Canvas))]
 	public class UIBehaviour : MonoBehaviour
 	{
-		[SerializeField, Tooltip("Disable childs in Editor only")]
-		private bool _disableChildsOnStart;
+		[SerializeField, Tooltip("Disable childs in containers (Editor only)")]
+		private bool _disableChildsInContainersOnStart;
 		[Space]
 		[SerializeField]
 		private string _defaultContainer = "Default";
@@ -24,11 +24,14 @@ namespace Kernel.UI
 			UpdateContainers();
 
 #if UNITY_EDITOR
-			if (_disableChildsOnStart)
+			if (_disableChildsInContainersOnStart)
 			{
-				foreach (Transform t in transform)
+				foreach (var kvp in _containers)
 				{
-					t.gameObject.SetActive(false);
+					foreach (Transform t in kvp.Value)
+					{
+						t.gameObject.SetActive(false);
+					}
 				}
 			}
 #endif
@@ -46,7 +49,7 @@ namespace Kernel.UI
 				containerName = _defaultContainer;
 			}
 
-			Debug.Assert(_containers.ContainsKey(containerName), "Container not exists: " + containerName);
+			Debug.Assert(_containers.ContainsKey(containerName), "Container not exists: " + containerName + ", in behaviour: " + gameObject.name);
 
 			return _containers.ContainsKey(containerName) ? _containers[containerName] : null;
 		}

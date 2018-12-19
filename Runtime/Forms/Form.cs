@@ -31,12 +31,13 @@ namespace Kernel.UI
 
 		private bool _needCloseFader;
 
-
 		public bool ShowFader
 		{
 			get { return _showFader; }
 			set { _showFader = value; }
 		}
+
+		public bool FaderVisible { get; private set; }
 
 		protected virtual void Awake()
 		{
@@ -62,7 +63,7 @@ namespace Kernel.UI
 			if (_needCloseFader)
 			{
 				_needCloseFader = false;
-				DialogFader.FadeOut(this, true);
+				DialogFader.FadeOut(this, true, () => FaderVisible = false);
 			}
 			if (gameObject != null) Destroy(gameObject);
 		}
@@ -108,7 +109,7 @@ namespace Kernel.UI
 			if (_showFader)
 			{
 				_needCloseFader = true;
-				DialogFader.FadeIn(this);
+				DialogFader.FadeIn(this, () => FaderVisible = true);
 			}
 
 			_state = FormState.Opening;
@@ -130,7 +131,7 @@ namespace Kernel.UI
 			if (_needCloseFader)
 			{
 				_needCloseFader = false;
-				DialogFader.FadeOut(this, force);
+				DialogFader.FadeOut(this, force, () => FaderVisible = false);
 			}
 
 			_canvasGroup.blocksRaycasts = false;
@@ -221,6 +222,7 @@ namespace Kernel.UI
 					}
 				}
 			}
+			while (FaderVisible) yield return null;
 
 			_processRoutine = null;
 			OnClosed();
