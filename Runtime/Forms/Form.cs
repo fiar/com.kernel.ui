@@ -18,6 +18,8 @@ namespace Kernel.UI
 
 		[SerializeField]
 		private bool _showFader;
+		[SerializeField]
+		private float _faderDuration = 1f;
 
 		private FormState _state = FormState.Closed;
 		private IEnumerator _processRoutine;
@@ -109,7 +111,7 @@ namespace Kernel.UI
 			if (_showFader)
 			{
 				_needCloseFader = true;
-				DialogFader.FadeIn(this, () => FaderVisible = true);
+				DialogFader.FadeIn(this, _faderDuration, () => FaderVisible = true);
 			}
 
 			_state = FormState.Opening;
@@ -118,7 +120,8 @@ namespace Kernel.UI
 
 			if (_processRoutine != null) StopCoroutine(_processRoutine);
 			_processRoutine = OpenAsync();
-			StartCoroutine(_processRoutine);
+			if(!IsClose) // form might be closed in OpenEvent handlers
+				StartCoroutine(_processRoutine);
 		}
 
 		public virtual void Close()
@@ -131,7 +134,7 @@ namespace Kernel.UI
 			if (_needCloseFader)
 			{
 				_needCloseFader = false;
-				DialogFader.FadeOut(this, force, () => FaderVisible = false);
+				DialogFader.FadeOut(this, _faderDuration, force, () => FaderVisible = false);
 			}
 
 			_canvasGroup.blocksRaycasts = false;
