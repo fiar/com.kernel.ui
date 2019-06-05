@@ -102,7 +102,10 @@ namespace Kernel.UI
 			set
 			{
 				_contentName = value;
-				gameObject.name = string.Format("Dialog - {0}", ContentName);
+				// gameObject.name = string.Format("Dialog - {0}", ContentName);
+				var label = GetType().Name;
+				label += " - " + (!string.IsNullOrEmpty(_contentName) ? _contentName : "[EMPTY]");
+				gameObject.name = label;
 			}
 		}
 	}
