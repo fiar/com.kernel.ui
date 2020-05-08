@@ -35,9 +35,23 @@ namespace Kernel.UI
 			set { _path = value; }
 		}
 
+		private static bool _useCache = false;
+
+		public static bool UseCache
+		{
+			get { return _useCache; }
+			set { _useCache = value; }
+		}
+
 		private UIBehaviour _behaviour;
 
 		private List<Form> _forms;
+		private Dictionary<string, Form> _formsCache;
+
+		public bool IsFormCached(Form form)
+		{
+			return _formsCache.ContainsValue(form);
+		}
 
 
 		public static void Initialize()
@@ -85,6 +99,7 @@ namespace Kernel.UI
 			_behaviour = behaviours[0];
 
 			_forms = new List<Form>();
+			_formsCache = new Dictionary<string, Form>();
 
 			Canvas.ForceUpdateCanvases();
 		}
@@ -106,6 +121,14 @@ namespace Kernel.UI
 
 		private Form CreateForm_Internal(string name, UIBehaviour behaviour, string containerName)
 		{
+			if (UseCache)
+			{
+				if (_formsCache.ContainsKey(name) && _formsCache[name] != null)
+				{
+					return _formsCache[name];
+				}
+			}
+			
 			var resource = Resources.Load<Form>(Path + "/" + name);
 			Debug.Assert(resource != null, "Form (" + name + ") not found");
 
@@ -119,6 +142,7 @@ namespace Kernel.UI
 				form.transform.SetParent(container, false);
 				form.gameObject.SetActive(false);
 				_forms.Add(form);
+				_formsCache[name] = form;
 				return form;
 			}
 

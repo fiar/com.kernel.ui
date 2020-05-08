@@ -67,7 +67,18 @@ namespace Kernel.UI
 				_needCloseFader = false;
 				DialogFader.FadeOut(this, true, () => FaderVisible = false);
 			}
-			if (gameObject != null) Destroy(gameObject);
+
+			if (gameObject != null)
+			{
+				if (UIManager.UseCache && UIManager.Instance.IsFormCached(this))
+				{
+					gameObject.SetActive(false);
+				}
+				else
+				{
+					Destroy(gameObject);
+				}
+			}
 		}
 
 		public virtual void OnOpen(params object[] args)
